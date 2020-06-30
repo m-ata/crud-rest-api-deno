@@ -1,6 +1,13 @@
-import { serve } from "https://deno.land/std@0.59.0/http/server.ts";
-const s = serve({ port: 8000 });
-console.log("http://localhost:8000/");
-for await (const req of s) {
-  req.respond({ body: "Hello World\n" });
-}
+import { Application } from 'https://deno.land/x/oak/mod.ts';
+import router from './routes.ts';
+
+const port = 5000;
+
+const app = new Application();
+
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+console.log(`Server is running on port ${port}`);
+
+await app.listen({ port });
