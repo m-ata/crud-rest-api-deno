@@ -73,4 +73,45 @@ const addProduct = async ({ request, response } : { request: any, response: any}
     }
 }
 
-export { getAllProducts, getProduct, addProduct }
+// update product
+const updateProduct = async ({ params, request, response} : { params: {id: string}, request : any, response: any }) => {
+    const product = products.find(p => p.id === params.id);
+
+    if(product) {
+        const body = await request.body();
+
+        const updateData : {
+            name?: string;
+            description?: string;
+            price?: number
+        } = body.value;
+
+        console.log(updateData);
+
+        products = products.map(p => p.id === params.id ? { ...p, ...updateData } : p);
+
+        request.status = 200;
+        request.body = {
+            success: true,
+            data: products
+        }
+    } else {
+        response.status = 404;
+        response.body = {
+            success: false,
+            msg: 'Not found'
+        }
+    }
+}
+
+//delete Product
+const deleteProduct = ({ params, response} : {params: {id: string}, response: any}) => {
+    products = products.filter(p => p.id !== params.id);
+
+    response.body = {
+        success: true,
+        msg: 'Product removed'
+    }
+}
+
+export { getAllProducts, getProduct, addProduct, updateProduct, deleteProduct }
